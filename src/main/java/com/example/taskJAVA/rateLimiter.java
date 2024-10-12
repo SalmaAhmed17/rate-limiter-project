@@ -31,7 +31,7 @@ public class rateLimiter {
 
         if (userLimit == null) {
             logger.warn("User not found in database for userId: {}", userId);
-            logToFile("Action not allowed for userId: " + userId +"because the user is not exist in the database"); // Log this event too
+            logToFile("Action not allowed for userId: " + userId +" because the user is not exist in the database"); // Log this event too
             return false; // User not found
         }
 
@@ -40,8 +40,8 @@ public class rateLimiter {
         // Check if the user is rate-limited (exceeds max actions)
         if (redisService.isRateLimited(redisKey, userLimit.getMaxActions())) {
             logger.warn("Rate limit exceeded for userId: {}", userId);
-            logToFile("Action not allowed for userId: " + userId +"because the user exceeded the max actions allowed"); // Log this event too
-            return false; // Rate limit exceeded
+            logToFile("Action not allowed for userId: " + userId +" because the user exceeded the max actions allowed"); // Log this event too
+            return false; // Rate limit exceeded, not allowed
         }
 
         // Increment actions and set TTL (time window in seconds)
@@ -49,11 +49,11 @@ public class rateLimiter {
         logger.info("Current actions for userId {}: {}", userId, currentActions);
 
         // Check for abnormal behavior
-        if (currentActions > userLimit.getMaxActions()) {
+        /*if (currentActions > userLimit.getMaxActions()) {
             String message = "Abnormal behavior detected: userId " + userId + " exceeded maximum actions!";
             logger.error(message);
             logToFile(message);
-        }
+        }*/
 
         // Return true if the user hasn't exceeded the limit yet
         return true;

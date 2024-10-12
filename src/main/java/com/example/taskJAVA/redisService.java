@@ -3,6 +3,7 @@ package com.example.taskJAVA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import com.example.taskJAVA.UserLimitRepo;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class redisService {
     @Autowired
     private StringRedisTemplate redisTemplate;
+    @Autowired
+    private UserLimitRepo userLimitRepo;
 
     // Set the user action count and expiration time window in Redis
     public Long incrementActionsWithTTL(String key, int timeWindowSeconds) {
@@ -28,9 +31,9 @@ public class redisService {
         String actionCountStr = redisTemplate.opsForValue().get(key);
         if (actionCountStr != null) {
             int currentActions = Integer.parseInt(actionCountStr);
-            return currentActions >= maxActions;
+            return currentActions >= maxActions;//not allowed
         }
-        return false;
+        return false; //allowed
     }
 
     // Get the TTL for the Redis key to check remaining time window
